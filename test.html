@@ -43,6 +43,11 @@
         {{includedHtml}}<br>
         {{& includedHtml}}<br>
         {{{includedHtml}}}<br>
+        {{#groups}}
+        {{#list}}
+        {{name}} hello {{.}}<br>
+        {{/list}}
+        {{/groups}}
     </script>
 </section>
 <section>
@@ -63,7 +68,25 @@
             "postProcessFunction": (input, render) => render(input.replaceAll(/1/g, "hello").replaceAll(/2/g, "world")),
             "flag": true,
             "unflagged": false,
-            "includedHtml": "<b>hello</b> world"
+            "includedHtml": "<b>hello</b> world",
+            "groups": [
+                {
+                    "name": "group name 1",
+                    "list": [
+                        "A",
+                        "B",
+                        "C"
+                    ]
+                },
+                {
+                    "name": "group name 2",
+                    "list": [
+                        "D",
+                        "E",
+                        "F"
+                    ]
+                }
+            ]
         }
     </script>
 </section>

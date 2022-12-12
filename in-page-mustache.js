@@ -131,13 +131,11 @@
                             dataStack.pop();
                         } else if (!item.negated && nextData !== undefined) {
                             if (Array.isArray(nextData)) {
-                                dataStack.push(nextData);
                                 nextData.forEach(x => {
                                     dataStack.push(x);
                                     result += process(item, dataStack);
                                     dataStack.pop();
                                 });
-                                dataStack.pop();
                             } else if (typeof nextData === 'function') {
                                 result += nextData.call(null, template.substring(item.startIndex, item.endIndex), text => parse(text, options).render(dataStack));
                             } else {
