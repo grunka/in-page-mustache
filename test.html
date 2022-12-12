@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Mustache Renderer</title>
+</head>
+<style>
+    body {
+        font-family: "Helvetica Neue", sans-serif;
+        display: grid;
+        grid-template-columns: auto 500px 500px auto;
+        grid-column-gap: 10px;
+        grid-row-gap: 20px;
+    }
+
+    script.visible {
+        font-family: monospace;
+        display: block;
+        white-space: pre;
+        border: 1px solid grey;
+        overflow: auto;
+    }
+</style>
+<body>
+<section style="grid-column-start: 2">
+    <h1>Template</h1>
+    <script id="input-template" type="text/html" class="visible" contenteditable="true">
+        {{^unflagged}}{{#flag}}hello flagged {{name}}{{/flag}}{{/unflagged}}<br>
+        hello {{name}}<br>
+        hello {{#name}}{{.}}{{/name}}<br>
+        hello {{#complexName}}{{name}}{{/complexName}}<br>
+        {{#names}}
+        hello {{.}}<br>
+        {{/names}}
+        {{^something}}hello nothing{{/something}}<br>
+        {{helloFunction}}<br>
+        {{#postProcessFunction}}-1 {{x}} 2-{{/postProcessFunction}}<br>
+        flag: {{flag}}, unflagged: {{unflagged}}<br>
+        {{! comment to ignore }}
+        {{^flag}}
+        should not be seen
+        {{/flag}}
+        {{notfound}}
+        {{includedHtml}}<br>
+        {{& includedHtml}}<br>
+        {{{includedHtml}}}<br>
+    </script>
+</section>
+<section>
+    <h1>JSON</h1>
+    <script class="visible" contenteditable="true">
+        const inputData = {
+            "name": "world",
+            "names": [
+                "one",
+                "two",
+                "three"
+            ],
+            "x": "XXX",
+            "complexName": {
+                "name": "Steve"
+            },
+            "helloFunction": () => "hello function",
+            "postProcessFunction": (input, render) => render(input.replaceAll(/1/g, "hello").replaceAll(/2/g, "world")),
+            "flag": true,
+            "unflagged": false,
+            "includedHtml": "<b>hello</b> world"
+        }
+    </script>
+</section>
+<section style="grid-row-start: 3; grid-column-start: 2">
+    <h1>Output</h1>
+    <p id="output"></p>
+</section>
+<section style="grid-row-start: 3; grid-column-start: 3">
+    <h1>Output raw</h1>
+    <p id="output-raw" style="white-space: pre"></p>
+</section>
+<script src="in-page-mustache.js"></script>
+<script>
+    const template = InPageMustache.parse("{{> input-template }}");
+    const rendered = template.render(inputData);
+    document.getElementById('output').innerHTML = rendered;
+    document.getElementById('output-raw').innerText = rendered;
+</script>
+</body>
+</html>
