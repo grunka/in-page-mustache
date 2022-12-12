@@ -100,8 +100,10 @@
 </section>
 <script src="in-page-mustache.js"></script>
 <script>
-    const template = InPageMustache.parse("{{> input-template }}");
-    const rendered = template.render(inputData);
+    const rendered = InPageMustache.render({
+        template: "{{> input-template}}",
+        data: inputData
+    });
     document.getElementById('output').innerHTML = rendered;
     document.getElementById('output-raw').innerText = rendered;
 </script>
