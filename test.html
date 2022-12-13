@@ -98,9 +98,9 @@
     <h1>Output raw</h1>
     <p id="output-raw" style="white-space: pre"></p>
 </section>
-<script src="in-page-mustache.js"></script>
-<script>
-    const rendered = InPageMustache.render({
+<script type="module">
+    import render from "./in-page-mustache.js";
+    const rendered = render({
         template: "{{> input-template}}",
         data: inputData
     });
