@@ -111,6 +111,14 @@ function renderInternal(template, open, close, dataStack) {
                 throw `Could not find element with id ${tag} to use as partial`;
             }
             output.push(renderInternal(partialElement.innerText, open, close, dataStack));
+        } else if (tag.startsWith("=") && tag.endsWith("=")) {
+            const content = tag.substring(1, tag.length - 1).trim();
+            const matchedNewTags = content.match(/^([^ =]+)[ ]+([^ =]+)$/);
+            if (!matchedNewTags) {
+                throw "Expected new tags but could not find them";
+            }
+            open = matchedNewTags[1];
+            close = matchedNewTags[2];
         } else {
             let escapeHtml = true;
             if (tag.startsWith("&")) {

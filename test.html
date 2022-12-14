@@ -7,7 +7,7 @@
     body {
         font-family: "Helvetica Neue", sans-serif;
         display: grid;
-        grid-template-columns: auto 500px 500px auto;
+        grid-template-columns: auto 500px 500px 500px auto;
         grid-column-gap: 10px;
         grid-row-gap: 20px;
     }
@@ -48,6 +48,10 @@
         {{name}} hello {{.}}<br>
         {{/list}}
         {{/groups}}
+        {{=<% %>=}}
+        hello <% name %> with new tags<br>
+        <%={{ }}=%>
+        hello {{ name }} with normal tags again<br>
     </script>
 </section>
 <section>
@@ -98,14 +102,41 @@
     <h1>Output raw</h1>
     <p id="output-raw" style="white-space: pre"></p>
 </section>
-<script type="module">
-    import renderMustacheTemplate from "./in-page-mustache.js";
-    const rendered = renderMustacheTemplate({
-        template: "{{> input-template}}",
-        data: inputData
-    });
-    document.getElementById('output').innerHTML = rendered;
-    document.getElementById('output-raw').innerText = rendered;
+<section style="grid-row-start: 1; grid-column-start: 4">
+    <h1>Rendering</h1>
+    <script type="module" class="visible">
+        import renderMustacheTemplate from "./in-page-mustache.js";
+
+        const rendered = renderMustacheTemplate({
+            template: "{{> input-template}}",
+            data: inputData
+        });
+        document.getElementById('output').innerHTML = rendered;
+        document.getElementById('output-raw').innerText = rendered;
+    </script>
+</section>
+<script>
+    Object.values(document.querySelectorAll('script.visible')).forEach((element) => {
+        const text = element.innerText;
+        const rows = text.split("\n");
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].trim().length > 0) {
+                const rowMatch = rows[i].match(/^( +).*$/);
+                if (!rowMatch) {
+                    return;
+                }
+                const spacesAtStart = rowMatch[1];
+                for (let j = 0; j < rows.length; j++) {
+                    if (rows[j].startsWith(spacesAtStart)) {
+                        rows[j] = rows[j].substring(spacesAtStart.length);
+                    }
+                }
+                element.innerText = rows.join("\n");
+                return;
+            }
+        }
+        console.log(rows)
+    })
 </script>
 </body>
 </html>
