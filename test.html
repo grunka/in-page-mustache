@@ -52,12 +52,29 @@
         hello <% name %> with new tags<br>
         <%={{ }}=%>
         hello {{ name }} with normal tags again<br>
+        {{#values}}
+        {{#things}}
+        {{.}} {{one}} {{two}} {{three}}<br>
+        {{/things}}
+        {{/values}}
+    </script>
+    <script type="text/html">
     </script>
 </section>
 <section>
     <h1>JSON</h1>
     <script class="visible" contenteditable="true">
         const inputData = {
+            "things": [
+                "Thing A",
+                "Thing B",
+                "Thing C"
+            ],
+            "values": {
+                "one": "1",
+                "two": "2",
+                "three": "3",
+            },
             "name": "world",
             "names": [
                 "one",

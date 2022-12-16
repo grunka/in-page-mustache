@@ -2,12 +2,15 @@ function findInStack(stack, needle) {
     if (needle === ".") {
         return stack[stack.length - 1];
     }
-    const match = stack.findLast(object => typeof object === "object" && object[needle] !== null);
-    if (match !== undefined) {
-        return match[needle];
-    } else {
-        return undefined;
+    for (let i = stack.length - 1; i >= 0; i--) {
+        const current = stack[i];
+        if (typeof current === 'object') {
+            if (current.hasOwnProperty(needle)) {
+                return current[needle];
+            }
+        }
     }
+    return undefined;
 }
 
 function findStopTag(template, open, close, needle, index) {
