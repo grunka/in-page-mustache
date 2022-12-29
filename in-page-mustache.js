@@ -2,11 +2,18 @@ function findInStack(stack, needle) {
     if (needle === ".") {
         return stack[stack.length - 1];
     }
+    needle = needle.split(".");
     for (let i = stack.length - 1; i >= 0; i--) {
-        const current = stack[i];
-        if (typeof current === 'object') {
-            if (current.hasOwnProperty(needle)) {
-                return current[needle];
+        let current = stack[i];
+        for (let j = 0; j < needle.length; j++) {
+            if (typeof current !== 'object') {
+                break;
+            }
+            if (current.hasOwnProperty(needle[j])) {
+                current = current[needle[j]];
+                if (j === needle.length - 1) {
+                    return current;
+                }
             }
         }
     }
@@ -47,7 +54,7 @@ function findStopTag(template, open, close, needle, index) {
     return undefined;
 }
 
-function renderInternal(template, open, close, dataStack) {
+function renderInternal(template, open, close, partialLookup, dataStack) {
     let output = [];
     let currentIndex = 0;
     while (currentIndex < template.length) {
@@ -81,7 +88,7 @@ function renderInternal(template, open, close, dataStack) {
                 if (nextData !== undefined) {
                     dataStack.push(nextData);
                 }
-                output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, dataStack))
+                output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, dataStack))
                 if (nextData !== undefined) {
                     dataStack.pop();
                 }
@@ -90,16 +97,16 @@ function renderInternal(template, open, close, dataStack) {
                     let subTemplate = template.substring(currentIndex, stopTagIndex);
                     for (let i = 0; i < nextData.length; i++) {
                         dataStack.push(nextData[i]);
-                        output.push(renderInternal(subTemplate, open, close, dataStack));
+                        output.push(renderInternal(subTemplate, open, close, partialLookup, dataStack));
                         dataStack.pop();
                     }
                 } else if (typeof nextData === "function") {
                     output.push(nextData.call(null, template.substring(currentIndex, stopTagIndex), (text) => {
-                        return renderInternal(text, open, close, dataStack);
+                        return renderInternal(text, open, close, partialLookup, dataStack);
                     }));
                 } else {
                     dataStack.push(nextData);
-                    output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, dataStack))
+                    output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, dataStack))
                     dataStack.pop();
                 }
             }
@@ -109,11 +116,8 @@ function renderInternal(template, open, close, dataStack) {
             throw `Encountered unexpected end tag ${tag}`;
         } else if (tag.startsWith(">")) {
             tag = tag.substring(1).trim();
-            const partialElement = document.getElementById(tag);
-            if (!partialElement) {
-                throw `Could not find element with id ${tag} to use as partial`;
-            }
-            output.push(renderInternal(partialElement.innerText, open, close, dataStack));
+            const partialTemplate = partialLookup.call(null, tag);
+            output.push(renderInternal(partialTemplate, open, close, partialLookup, dataStack));
         } else if (tag.startsWith("=") && tag.endsWith("=")) {
             const content = tag.substring(1, tag.length - 1).trim();
             const matchedNewTags = content.match(/^([^ =]+)[ ]+([^ =]+)$/);
@@ -166,8 +170,15 @@ export default function render(options) {
     if (!template) {
         throw "Template not defined";
     }
-    let open = options.open || "{{";
-    let close = options.close || "}}";
+    const open = options["open"] || "{{";
+    const close = options["close"] || "}}";
+    const partialLookup = options["partialLookup"] || (name => {
+        const partialElement = document.getElementById(name);
+        if (!partialElement) {
+            throw `Could not find element with id ${name} to use as partial`;
+        }
+        return partialElement.innerText;
+    });
 
-    return renderInternal(template, open, close, [options.data || {}])
+    return renderInternal(template, open, close, partialLookup, [options.data || {}])
 }

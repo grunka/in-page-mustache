@@ -23,6 +23,9 @@
 <body>
 <section style="grid-column-start: 2">
     <h1>Template</h1>
+    <script id="partial-template" type="text/html" class="visible" contenteditable="true">
+        {{.}}
+    </script>
     <script id="input-template" type="text/html" class="visible" contenteditable="true">
         {{^unflagged}}{{#flag}}hello flagged {{name}}{{/flag}}{{/unflagged}}<br>
         hello {{name}}<br>
@@ -56,6 +59,13 @@
         {{#things}}
         {{.}} {{one}} {{two}} {{three}}<br>
         {{/things}}
+        {{/values}}
+        {{#names}}
+        {{> partial-template }}<br>
+        {{/names}}
+        {{complexName.name}}<br>
+        {{#values}}
+        {{complexName.name}}<br>
         {{/values}}
     </script>
     <script type="text/html">
