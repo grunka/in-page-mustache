@@ -1,0 +1,24 @@
+{
+  "name": "@grunka/in-page-mustache",
+  "version": "1.0.0",
+  "description": "A mustache template renderer, mostly for rendering in the browser",
+  "main": "in-page-mustache.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grunka/in-page-mustache.git"
+  },
+  "keywords": [
+    "javascript",
+    "mustache"
+  ],
+  "author": "John Wästerlund",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/grunka/in-page-mustache/issues"
+  },
+  "homepage": "https://github.com/grunka/in-page-mustache#readme"
+}
