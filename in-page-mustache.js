@@ -179,6 +179,10 @@ export default function render(options) {
         }
         return partialElement.innerText;
     });
+    const dataStack = options["dataStack"] || [options["data"] || {}];
+    if (!Array.isArray(dataStack)) {
+        throw "Data stack is not a stack";
+    }
 
-    return renderInternal(template, open, close, partialLookup, [options.data || {}])
+    return renderInternal(template, open, close, partialLookup, dataStack);
 }
