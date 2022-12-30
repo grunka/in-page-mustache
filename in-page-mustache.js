@@ -54,7 +54,7 @@ function findStopTag(template, open, close, needle, index) {
     return undefined;
 }
 
-function renderInternal(template, open, close, partialLookup, dataStack) {
+function renderInternal(template, open, close, partialLookup, escapeHtmlDefault, dataStack) {
     let output = [];
     let currentIndex = 0;
     while (currentIndex < template.length) {
@@ -88,7 +88,7 @@ function renderInternal(template, open, close, partialLookup, dataStack) {
                 if (nextData !== undefined) {
                     dataStack.push(nextData);
                 }
-                output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, dataStack))
+                output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, undefined, dataStack))
                 if (nextData !== undefined) {
                     dataStack.pop();
                 }
@@ -97,16 +97,16 @@ function renderInternal(template, open, close, partialLookup, dataStack) {
                     let subTemplate = template.substring(currentIndex, stopTagIndex);
                     for (let i = 0; i < nextData.length; i++) {
                         dataStack.push(nextData[i]);
-                        output.push(renderInternal(subTemplate, open, close, partialLookup, dataStack));
+                        output.push(renderInternal(subTemplate, open, close, partialLookup, undefined, dataStack));
                         dataStack.pop();
                     }
                 } else if (typeof nextData === "function") {
                     output.push(nextData.call(null, template.substring(currentIndex, stopTagIndex), (text) => {
-                        return renderInternal(text, open, close, partialLookup, dataStack);
+                        return renderInternal(text, open, close, partialLookup, undefined, dataStack);
                     }));
                 } else {
                     dataStack.push(nextData);
-                    output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, dataStack))
+                    output.push(renderInternal(template.substring(currentIndex, stopTagIndex), open, close, partialLookup, undefined, dataStack))
                     dataStack.pop();
                 }
             }
@@ -117,7 +117,7 @@ function renderInternal(template, open, close, partialLookup, dataStack) {
         } else if (tag.startsWith(">")) {
             tag = tag.substring(1).trim();
             const partialTemplate = partialLookup.call(null, tag);
-            output.push(renderInternal(partialTemplate, open, close, partialLookup, dataStack));
+            output.push(renderInternal(partialTemplate, open, close, partialLookup, undefined, dataStack));
         } else if (tag.startsWith("=") && tag.endsWith("=")) {
             const content = tag.substring(1, tag.length - 1).trim();
             const matchedNewTags = content.match(/^([^ =]+)[ ]+([^ =]+)$/);
@@ -127,7 +127,7 @@ function renderInternal(template, open, close, partialLookup, dataStack) {
             open = matchedNewTags[1];
             close = matchedNewTags[2];
         } else {
-            let escapeHtml = true;
+            let escapeHtml = escapeHtmlDefault;
             if (tag.startsWith("&")) {
                 escapeHtml = false;
                 tag = tag.substring(1).trim();
@@ -183,6 +183,7 @@ export default function render(options) {
     if (!Array.isArray(dataStack)) {
         throw "Data stack is not a stack";
     }
+    const escapeHtmlDefault = options["escapeHtml"] || true;
 
-    return renderInternal(template, open, close, partialLookup, dataStack);
+    return renderInternal(template, open, close, partialLookup, escapeHtmlDefault, dataStack);
 }
