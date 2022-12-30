@@ -67,6 +67,9 @@
         {{#values}}
         {{complexName.name}}<br>
         {{/values}}
+        {{#one}}
+        {{one.title}} {{two.title}}<br>
+        {{/one}}
     </script>
     <script type="text/html">
     </script>
@@ -75,6 +78,12 @@
     <h1>JSON</h1>
     <script class="visible" contenteditable="true">
         const inputData = {
+            "one": {
+                "title": "Title One"
+            },
+            "two": {
+                "title": "Title Two"
+            },
             "things": [
                 "Thing A",
                 "Thing B",

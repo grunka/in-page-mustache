@@ -9,11 +9,12 @@ function findInStack(stack, needle) {
             if (typeof current !== 'object') {
                 break;
             }
-            if (current.hasOwnProperty(needle[j])) {
-                current = current[needle[j]];
-                if (j === needle.length - 1) {
-                    return current;
-                }
+            if (!current.hasOwnProperty(needle[j])) {
+                break;
+            }
+            current = current[needle[j]];
+            if (j === needle.length - 1) {
+                return current;
             }
         }
     }
