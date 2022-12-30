@@ -1,6 +1,6 @@
 {
   "name": "@grunka/in-page-mustache",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A mustache template renderer, mostly for rendering in the browser",
   "main": "in-page-mustache.js",
   "type": "module",
