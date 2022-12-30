@@ -183,7 +183,7 @@ export default function render(options) {
     if (!Array.isArray(dataStack)) {
         throw "Data stack is not a stack";
     }
-    const escapeHtmlDefault = options["escapeHtml"] || true;
+    const escapeHtmlDefault = options["escapeHtml"] !== false;
 
     return renderInternal(template, open, close, partialLookup, escapeHtmlDefault, dataStack);
 }
