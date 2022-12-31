@@ -5,6 +5,9 @@ function findInStack(stack, needle) {
     needle = needle.split(".");
     for (let i = stack.length - 1; i >= 0; i--) {
         let current = stack[i];
+        if (current === null || current === undefined) {
+            continue;
+        }
         for (let j = 0; j < needle.length; j++) {
             if (typeof current !== 'object') {
                 break;
