@@ -5,7 +5,7 @@
   "main": "in-page-mustache.js",
   "type": "module",
   "scripts": {
-    "test": "test/in-page-mustache.test.js"
+    "test": "node --test in-page-mustache.test.mjs"
   },
   "repository": {
     "type": "git",
