@@ -5,7 +5,7 @@
   "main": "in-page-mustache.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "test/in-page-mustache.test.js"
   },
   "repository": {
     "type": "git",
